@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI Vision Assistant helps blind and visually impaired users understand their surroundings with camera, object detection, OCR, and voice." />
+  <title>AI Vision Assistant for Visually Impaired People</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- TensorFlow.js + COCO-SSD: real object detection (bottle, person, chair, etc.) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3"></script>
+  <!-- Tesseract.js: OCR in the browser -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+</head>
+<body class="app-shell">
+  <!-- Browsers require a tap/click before mic + speech; voice starts automatically after this -->
+  <div id="start-overlay" class="start-overlay" role="dialog" aria-modal="true" aria-labelledby="tap-start-title">
+    <div class="start-overlay-inner">
+      <div class="start-badge" aria-hidden="true">● Live</div>
+      <h2 id="tap-start-title" class="tap-start-title">Tap to start assistant</h2>
+      <p id="tap-start-help" class="tap-start-help">Voice listening and camera turn on after one tap. No need to press voice buttons.</p>
+      <button type="button" id="btn-start-assistant" class="btn btn-tap">Start — enable mic &amp; camera</button>
+    </div>
+  </div>
+
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <header class="app-header" role="banner">
+    <div class="app-header__brand">
+      <span class="app-header__icon" aria-hidden="true">◉</span>
+      <div>
+        <h1 id="app-title">AI Vision Assistant</h1>
+        <p id="app-subtitle" class="subtitle">For blind and visually impaired users</p>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="main" role="main" tabindex="-1">
+    <!-- Live camera preview (hidden from screen readers as duplicate of spoken feedback) -->
+    <section class="video-section" aria-label="Camera preview">
+      <div class="video-section__bar" aria-hidden="true"><span>Camera</span></div>
+      <video id="video" playsinline autoplay muted aria-hidden="true"></video>
+      <canvas id="canvas" hidden></canvas>
+      <p id="status" class="status" role="status" aria-live="polite">Loading…</p>
+      <p id="detection-output" class="detection-output" aria-live="polite"></p>
+    </section>
+
+    <!-- Primary controls: large targets for accessibility -->
+    <section class="controls" aria-label="Main controls">
+      <button type="button" id="btn-start-camera" class="btn btn-primary">
+        Start Camera
+      </button>
+      <button type="button" id="btn-stop-camera" class="btn btn-primary" disabled>
+        Stop Camera
+      </button>
+      <button type="button" id="btn-detect-object" class="btn btn-accent" disabled>
+        Detect Object
+      </button>
+      <button type="button" id="btn-read-text" class="btn btn-accent" disabled>
+        Read Text
+      </button>
+      <button type="button" id="btn-detect-currency" class="btn btn-accent" disabled>
+        Detect Currency
+      </button>
+    </section>
+
+    <!-- Language + voice control -->
+    <section class="options" aria-label="Language and voice">
+      <label for="language-select" id="label-language" class="label-large">Language</label>
+      <select id="language-select" class="select-large" aria-describedby="label-language">
+        <option value="en">English</option>
+        <option value="hi">Hindi (हिंदी)</option>
+        <option value="mr">Marathi (मराठी)</option>
+      </select>
+      <button type="button" id="btn-voice-control" class="btn btn-secondary">
+        Start Voice Control
+      </button>
+      <p id="voice-hint" class="voice-hint" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <p id="footer-text">All processing happens in your browser. No data is sent to a server.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
